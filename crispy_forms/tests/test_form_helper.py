@@ -69,8 +69,10 @@ def test_inputs(settings):
         assert 'class="btn"' in html
         assert 'btn btn-primary' in html
         assert 'btn btn-inverse' in html
-        assert len(re.findall(r'<input[^>]+> <', html)) == 8
-
+        if settings.CRISPY_TEMPLATE_PACK == 'bootstrap4':
+            assert len(re.findall(r'<input[^>]+> <', html)) == 9
+        else:
+            assert len(re.findall(r'<input[^>]+> <', html)) == 8
 
 def test_invalid_form_method():
     form_helper = FormHelper()
@@ -677,7 +679,7 @@ def test_error_text_inline(settings):
 
 
 @only_bootstrap3
-def test_error_and_help_inline():
+def test_error_and_help_inline_bootstrap3():
     form = SampleForm({'email': 'invalidemail'})
     form.helper = FormHelper()
     form.helper.error_text_inline = False
@@ -702,7 +704,7 @@ def test_error_and_help_inline():
 
     # Check that error goes before help, otherwise CSS won't work
     error_position = html.find('<span id="error_1_id_email" class="help-inline">')
-    help_position = html.find('<p id="hint_id_email" class="help-block">')
+    help_position = html.find('<div id="hint_id_email" class="help-block">')
     assert error_position < help_position
 
 

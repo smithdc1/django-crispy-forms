@@ -125,7 +125,7 @@ class FormHelper(DynamicLayoutHandler):
     Let's see what attributes you can set and what form behaviors they apply to:
 
         **form_method**: Specifies form method attribute.
-            You can see it to 'POST' or 'GET'. Defaults to 'POST'
+            You can set it to 'POST' or 'GET'. Defaults to 'POST'
 
         **form_action**: Applied to the form action attribute:
             - Can be a named url in your URLconf that can be executed via the `{% url %}` template tag. \
@@ -215,6 +215,7 @@ class FormHelper(DynamicLayoutHandler):
     template = None
     field_template = None
     disable_csrf = False
+    use_custom_control = True
     label_class = ''
     field_class = ''
     include_media = True
@@ -364,6 +365,7 @@ class FormHelper(DynamicLayoutHandler):
             'html5_required': self.html5_required,
             'form_show_labels': self.form_show_labels,
             'disable_csrf': self.disable_csrf,
+            'use_custom_control': self.use_custom_control,
             'label_class': self.label_class,
             'field_class': self.field_class,
             'include_media': self.include_media
