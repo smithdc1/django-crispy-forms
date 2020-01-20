@@ -263,7 +263,7 @@ def do_uni_form(parser, token):
         ALLOWED_TEMPLATE_PACKS = getattr(
             settings,
             'CRISPY_ALLOWED_TEMPLATE_PACKS',
-            ('bootstrap', 'uni_form', 'bootstrap3', 'bootstrap4')
+            ('bootstrap', 'uni_form', 'bootstrap3', 'bootstrap4', 'bootstrap5')
         )
         if template_pack not in ALLOWED_TEMPLATE_PACKS:
             raise template.TemplateSyntaxError(

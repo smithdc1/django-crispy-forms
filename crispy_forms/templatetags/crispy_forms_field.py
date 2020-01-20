@@ -140,6 +140,18 @@ class CrispyFieldNode(template.Node):
                 if field.errors:
                     css_class += ' is-invalid'
 
+            if (
+                template_pack == 'bootstrap5'
+                and not is_multivalue(field)
+            ):
+                if not is_checkbox(field):
+                    css_class += ' form-control'
+                    if is_file(field):
+                        css_class += '-file'
+                if field.errors:
+                    css_class += ' is-invalid'
+
+
             widget.attrs['class'] = css_class
 
             # HTML5 required attribute
