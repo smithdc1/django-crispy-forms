@@ -1,7 +1,11 @@
 {% load crispy_forms_field %}
 
 <div class="custom-file {{ field_class }}">
-    {% crispy_field field 'class' 'custom-file-input' %}
+    {% if field.errors %}
+        {% crispy_field field 'class' 'custom-file-input is-invalid' %}
+    {% else %}
+        {% crispy_field field 'class' 'custom-file-input' %}    
+    {% endif %}
     <label class="custom-file-label" for="{{ field.id_for_label }}">Choose file</label>
     {% include 'bootstrap4/layout/help_text_and_errors.html' %}
     <script type="text/javascript" id="script-{{ field.id_for_label }}">        
