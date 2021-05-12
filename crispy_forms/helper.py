@@ -213,6 +213,14 @@ class FormHelper(DynamicLayoutHandler):
     include_media = True
 
     def __init__(self, form=None):
+        """
+        Usually you won't need to pass an instance of your form here. See the
+        class level doc string for more comprehensive documentation.
+
+        Args:
+            form : An instance of a form from which to build a default layout
+                   containing all of the forms fields.
+        """
         self.attrs = {}
         self.inputs = []
 
