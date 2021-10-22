@@ -1,5 +1,7 @@
 import re
 
+from django.utils.safestring import SafeString
+from django.forms import Form
 from django.urls import NoReverseMatch, reverse
 from django.utils.safestring import mark_safe
 
@@ -8,25 +10,37 @@ from crispy_forms.layout import Layout
 from crispy_forms.layout_slice import LayoutSlice
 from crispy_forms.utils import TEMPLATE_PACK, flatatt, list_difference, render_field
 
+from typing import Optional, Protocol
+
+
+class DynamicLayoutHandlerProtocol(Protocol):
+    @property
+    def layout(self) -> Optional[Layout]:
+        ...
+
+    @property
+    def form(self) -> Optional[Form]:
+        ...
+
 
 class DynamicLayoutHandler:
-    def _check_layout(self):
+    def _check_layout(self: DynamicLayoutHandlerProtocol) -> None:
         if self.layout is None:
             raise FormHelpersException("You need to set a layout in your FormHelper")
 
-    def _check_layout_and_form(self):
+    def _check_layout_and_form(self: DynamicLayoutHandlerProtocol) -> None:
         self._check_layout()
         if self.form is None:
             raise FormHelpersException("You need to pass a form instance to your FormHelper")
 
-    def all(self):
+    def all(self: DynamicLayoutHandlerProtocol) -> LayoutSlice:
         """
         Returns all layout objects of first level of depth
         """
         self._check_layout()
         return LayoutSlice(self.layout, slice(0, len(self.layout.fields), 1))
 
-    def filter(self, *LayoutClasses, **kwargs):
+    def filter(self: DynamicLayoutHandlerProtocol, *LayoutClasses, **kwargs) -> LayoutSlice:
         """
         Returns a LayoutSlice pointing to layout objects of type `LayoutClass`
         """
@@ -37,7 +51,7 @@ class DynamicLayoutHandler:
 
         return LayoutSlice(self.layout, filtered_layout_objects)
 
-    def filter_by_widget(self, widget_type):
+    def filter_by_widget(self: DynamicLayoutHandlerProtocol, widget_type: str) -> LayoutSlice:
         """
         Returns a LayoutSlice pointing to fields with widgets of `widget_type`
         """
@@ -52,7 +66,7 @@ class DynamicLayoutHandler:
 
         return LayoutSlice(self.layout, filtered_fields)
 
-    def exclude_by_widget(self, widget_type):
+    def exclude_by_widget(self, widget_type) -> LayoutSlice:
         """
         Returns a LayoutSlice pointing to fields with widgets NOT matching `widget_type`
         """
@@ -67,7 +81,7 @@ class DynamicLayoutHandler:
 
         return LayoutSlice(self.layout, filtered_fields)
 
-    def __getitem__(self, key):
+    def __getitem__(self: DynamicLayoutHandlerProtocol, key: Optional[str]) -> LayoutSlice:
         """
         Return a LayoutSlice that makes changes affect the current instance of the layout
         and not a copy.
@@ -92,13 +106,13 @@ class DynamicLayoutHandler:
 
         return LayoutSlice(self.layout, key)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self: DynamicLayoutHandlerProtocol, key, value):
         self.layout[key] = value
 
-    def __delitem__(self, key):
+    def __delitem__(self: DynamicLayoutHandlerProtocol, key) -> None:
         del self.layout.fields[key]
 
-    def __len__(self):
+    def __len__(self: DynamicLayoutHandlerProtocol) -> int:
         if self.layout is not None:
             return len(self.layout.fields)
         else:
@@ -212,7 +226,7 @@ class FormHelper(DynamicLayoutHandler):
     field_class = ""
     include_media = True
 
-    def __init__(self, form=None):
+    def __init__(self, form=None) -> None:
         self.attrs = {}
         self.inputs = []
 
@@ -284,13 +298,13 @@ class FormHelper(DynamicLayoutHandler):
         self._error_text_inline = flag
         self._help_text_inline = not flag
 
-    def add_input(self, input_object):
+    def add_input(self, input_object) -> None:
         self.inputs.append(input_object)
 
-    def add_layout(self, layout):
+    def add_layout(self, layout) -> None:
         self.layout = layout
 
-    def render_layout(self, form, context, template_pack=TEMPLATE_PACK):
+    def render_layout(self, form, context, template_pack=TEMPLATE_PACK) -> SafeString:
         """
         Returns safe html of the rendering of the layout
         """
